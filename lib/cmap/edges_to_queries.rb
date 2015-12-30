@@ -22,7 +22,11 @@ module Cmap; class EdgesToQueries
   end
 
   def add_columns_queries
-    unique_edges.map {|e| "alter table #{table_name} add column #{e.destination_vertex} int2;"}
+    unique_edges.map do |e|
+      vertex = e.destination_vertex
+      column_type = vertex.downcase.include?("numeric") ? "float4" : "int2"
+      "alter table #{table_name} add column #{vertex} #{column_type};"
+    end
   end
 
   def grouped_edges
