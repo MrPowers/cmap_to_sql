@@ -37,7 +37,7 @@ module Cmap; class GraphSanitizer
   end
 
   def sanitize_string(string)
-    string.gsub(/[^0-9a-zA-Z]+/, '_').downcase
+    string.gsub(/[^0-9a-zA-Z:]+/, '_').downcase
   end
 
 end; end

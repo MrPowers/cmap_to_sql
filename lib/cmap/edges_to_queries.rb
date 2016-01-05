@@ -23,7 +23,10 @@ module Cmap; class EdgesToQueries
   end
 
   def add_columns_queries
-    unique_edges.map {|e| "alter table #{schema_name}.#{table_name} add column #{e.destination_vertex} int2;"}
+    unique_edges.map do |e|
+      cp = ColumnParser.new(e.destination_vertex)
+      "alter table #{schema_name}.#{table_name} add column #{cp.column} #{cp.type};"
+    end
   end
 
   def grouped_edges
@@ -35,7 +38,10 @@ module Cmap; class EdgesToQueries
   end
 
   def updates
-    u = (grouped_edges[false] || []).map {|e| "#{e.destination_vertex}=(#{e.value})::int"}.join(", ")
+    u = (grouped_edges[false] || []).map do |e|
+      cp = ColumnParser.new(e.destination_vertex)
+      "#{cp.column}=(#{e.value})::int"
+    end.join(", ")
     return [] if u.empty?
     ["update #{schema_name}.#{table_name} set #{u};"]
   end

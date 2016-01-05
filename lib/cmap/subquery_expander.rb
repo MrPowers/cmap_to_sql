@@ -14,7 +14,9 @@ module Cmap; class SubqueryExpander
 
   def query(edge)
     r = edge.value
-    replacements = [["+table_name+", table_name], ["+schema_name+", schema_name], ["+destination_vertex+", edge.destination_vertex], ["+origin_vertex+", edge.origin_vertex]]
+    destination_column = ColumnParser.new(edge.destination_vertex).column
+    origin_column = ColumnParser.new(edge.origin_vertex).column
+    replacements = [["+table_name+", table_name], ["+schema_name+", schema_name], ["+destination_vertex+", destination_column], ["+origin_vertex+", origin_column]]
     (subquery_gsubs + replacements).each {|gsub| r = r.gsub(*gsub)}
     r
   end
